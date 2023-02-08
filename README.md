@@ -13,7 +13,6 @@ cmake -Bbuild
 cmake --open ./build
 cmake --build ./build
 
-
 ```
 
 ## Command
@@ -178,3 +177,14 @@ Options
   --help-variable-list [<file>]= List variables with help available and exit.
   --help-variables [<file>]    = Print cmake-variables manual and exit.
 ```
+
+## Basic Concept
+
+[cmake-language(7)](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html)
+
+- Target  // 通过这些命令创建 `add_executable()` `add_library()` `add_custom_target()`
+- Command // 包括 `internal command` `macro` `function`
+- Variable // 包括 `normal variable` `cache variable` `environment variable`
+
+
+---

@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.0)
 project(HELLO)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 message(STATUS "hello")
@@ -14,3 +15,10 @@ add_custom_command(
     DEPENDS main.in.cpp
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+
+add_custom_target(
+    admin
+    COMMAND ${CMAKE_COMMAND} -E echo "admin"
+)
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT foo)
