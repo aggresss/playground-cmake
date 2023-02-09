@@ -3,7 +3,11 @@ project(HELLO)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 message(STATUS "hello")
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 add_executable(foo main.cpp)
+set_target_properties(foo PROPERTIES FOLDER "alpha")
+
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT foo)
 
 set(GEN_SRC
@@ -27,3 +31,5 @@ add_custom_target(
     admin
     COMMAND ${CMAKE_COMMAND} -E echo "admin"
 )
+
+set_target_properties(admin PROPERTIES FOLDER "alpha")
