@@ -4,6 +4,7 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 message(STATUS "hello")
 
 add_executable(foo main.cpp)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT foo)
 
 set(GEN_SRC
     ${CMAKE_BINARY_DIR}/main.cpp
@@ -16,9 +17,13 @@ add_custom_command(
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
+add_custom_command(
+    TARGET foo
+    PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "custom_command before build of foo"
+)
+
 add_custom_target(
     admin
     COMMAND ${CMAKE_COMMAND} -E echo "admin"
 )
-
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT foo)
