@@ -42,7 +42,7 @@ static size_t curl_header_location_function(char *data, size_t size,
                                             size_t nmemb, void *priv_data) {
 
   // printf("curl_header_location_function has been invoked\n");
-  auto header_buffer = static_cast<std::string *>(priv_data);
+  auto header_buffer = static_cast<std::vector<std::string> *>(priv_data);
 
   size_t real_size = size * nmemb;
 
@@ -51,8 +51,9 @@ static size_t curl_header_location_function(char *data, size_t size,
   if (!astrcmpi_n(data, "location: ", LOCATION_HEADER_LENGTH)) {
     char *val = data + LOCATION_HEADER_LENGTH;
     // header_buffer->append(val, real_size - LOCATION_HEADER_LENGTH);
-    header_buffer->assign(val, real_size - LOCATION_HEADER_LENGTH);
-    *header_buffer = trim_string(*header_buffer);
+    auto tmp_header = std::string(val, real_size - LOCATION_HEADER_LENGTH);
+    tmp_header = trim_string(tmp_header);
+    header_buffer->push_back(tmp_header);
   }
 
   return real_size;
@@ -77,7 +78,7 @@ int main(void) {
   headers = curl_slist_append(headers, bearer_token_header);
 
   std::string read_buffer;
-  std::string location_header;
+  std::vector<std::string> location_header;
   std::string endpoint_url = "http://localhost:8082/whip";
 
   char offer_sdp[] = "sdp_offer";
@@ -121,12 +122,19 @@ int main(void) {
     return -1;
   }
 
-  if (location_header.empty()) {
-    printf("WHIP server did not provide a resource URL via the Location header\n");
+  long redirect_count = 0;
+  res = curl_easy_getinfo(c, CURLINFO_REDIRECT_COUNT, &redirect_count);
+  if (CURLE_OK != res) {
+      cleanup();
+      return -1;
+  }
+
+  if (location_header.size() != redirect_count + 1) {
+    printf("WHIP server did not provide a resource URL via the Location header. redirect time: %ld, location head size: %lu \n", redirect_count, location_header.size());
   } else {
     CURLU *h = curl_url();
     // curl_url_set(h, CURLUPART_URL, endpoint_url.c_str(), 0);
-    curl_url_set(h, CURLUPART_URL, location_header.c_str(), 0);
+    curl_url_set(h, CURLUPART_URL, location_header.back().c_str(), 0);
     char *url = nullptr;
     CURLUcode rc = curl_url_get(h, CURLUPART_URL, &url, CURLU_NO_DEFAULT_PORT);
     if (!rc) {
