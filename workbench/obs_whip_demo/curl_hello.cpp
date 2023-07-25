@@ -132,7 +132,7 @@ int main(void) {
   }
 
   if (location_headers.size() != redirect_count + 1) {
-    printf("WHIP server did not provide a resource URL via the Location header. redirect time: %ld, location head size: %lu \n", redirect_count, location_header.size());
+    printf("WHIP server did not provide a resource URL via the Location header. redirect time: %ld, location head size: %lu \n", redirect_count, location_headers.size());
   } else {
     CURLU *h = curl_url();
     // curl_url_set(h, CURLUPART_URL, endpoint_url.c_str(), 0);
