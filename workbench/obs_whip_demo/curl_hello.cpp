@@ -81,6 +81,7 @@ int main(void) {
   std::string read_buffer;
   std::vector<std::string> location_headers;
   std::string endpoint_url = "http://localhost:8082/whip";
+  // std::string endpoint_url = "http://localhost:8083/redirect";
 
   char offer_sdp[] = "sdp_offer";
 
@@ -131,7 +132,7 @@ int main(void) {
       return -1;
   }
 
-  if (location_headers.size() != redirect_count + 1) {
+  if (location_headers.size() < static_cast<size_t>(redirect_count) + 1) {
     printf("WHIP server did not provide a resource URL via the Location header. redirect time: %ld, location head size: %lu \n", redirect_count, location_headers.size());
   } else {
     CURLU *h = curl_url();
