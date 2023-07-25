@@ -9,6 +9,12 @@
 #include <stdio.h>
 #include <string>
 
+#define LOG_WARNING
+
+#define do_log(level, format, ...) \
+  printf(format, ##__VA_ARGS__); \
+  printf("\n")
+
 #define LOCATION_HEADER_LENGTH 10
 
 static const char *astrblank = "";
@@ -41,7 +47,7 @@ static std::string trim_string(const std::string &source) {
 static size_t curl_header_location_function(char *data, size_t size,
                                             size_t nmemb, void *priv_data) {
 
-  // printf("curl_header_location_function has been invoked\n");
+  // do_log(LOG_WARNING, "curl_header_location_function has been invoked");
   // auto header_buffer = static_cast<std::string *>(priv_data);
   auto header_buffer = static_cast<std::vector<std::string> *>(priv_data);
 
@@ -62,7 +68,7 @@ static size_t curl_header_location_function(char *data, size_t size,
 
 static size_t curl_writefunction(char *data, size_t size, size_t nmemb,
                                  void *priv_data) {
-  // printf("curl_writefunction has been invoked\n");
+  // do_log(LOG_WARNING, "curl_writefunction has been invoked");
   auto read_buffer = static_cast<std::string *>(priv_data);
 
   size_t real_size = size * nmemb;
@@ -105,7 +111,7 @@ int main(void) {
 
   CURLcode res = curl_easy_perform(c);
   if (res != CURLE_OK) {
-    printf("Connect failed: CURL returned result not CURLE_OK\n");
+    do_log(LOG_WARNING, "Connect failed: CURL returned result not CURLE_OK");
     cleanup();
     return -1;
   }
@@ -113,13 +119,13 @@ int main(void) {
   long response_code;
   curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &response_code);
   if (response_code != 201) {
-    printf("Connect failed: HTTP endpoint returned response code %ld\n", response_code);
+    do_log(LOG_WARNING, "Connect failed: HTTP endpoint returned response code %ld", response_code);
     cleanup();
     return -1;
   }
 
   if (read_buffer.empty()) {
-    printf("Connect failed: No data returned from HTTP endpoint request\n");
+    do_log(LOG_WARNING,"Connect failed: No data returned from HTTP endpoint request");
     cleanup();
     return -1;
   }
@@ -127,13 +133,13 @@ int main(void) {
   long redirect_count = 0;
   res = curl_easy_getinfo(c, CURLINFO_REDIRECT_COUNT, &redirect_count);
   if (CURLE_OK != res) {
-      printf("Connect failed: can not get redirect count\n");
+      do_log(LOG_WARNING,"Connect failed: can not get redirect count\n");
       cleanup();
       return -1;
   }
 
   if (location_headers.size() < static_cast<size_t>(redirect_count) + 1) {
-    printf("WHIP server did not provide a resource URL via the Location header. redirect time: %ld, location head size: %lu \n", redirect_count, location_headers.size());
+    do_log(LOG_WARNING,"WHIP server did not provide a resource URL via the Location header. redirect time: %ld, location head size: %lu", redirect_count, location_headers.size());
   } else {
     CURLU *h = curl_url();
     // curl_url_set(h, CURLUPART_URL, endpoint_url.c_str(), 0);
@@ -143,9 +149,9 @@ int main(void) {
     if (!rc) {
       std::string resource_url = url;
       curl_free(url);
-      printf("WHIP Resource URL is: %s\n", resource_url.c_str());
+      do_log(LOG_WARNING,"WHIP Resource URL is: %s", resource_url.c_str());
     } else {
-      printf("Unable to process resource URL response\n");
+      do_log(LOG_WARNING,"Unable to process resource URL response");
     }
     curl_url_cleanup(h);
   }
