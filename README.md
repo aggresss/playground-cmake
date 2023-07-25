@@ -12,7 +12,6 @@ Playground for CMake
 cmake -Bbuild
 cmake --open ./build
 cmake --build ./build
-
 ```
 
 ## Command
