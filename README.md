@@ -12,6 +12,9 @@ Playground for CMake
 cmake -Bbuild
 cmake --open ./build
 cmake --build ./build
+cmake --install ./build --prefix /my/install/prefix
+cmake . -LH
+ccmake .
 ```
 
 ## Command
