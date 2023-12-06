@@ -6,4 +6,6 @@ message(STATUS "hello")
 
 find_package(FFmpeg REQUIRED COMPONENTS avcodec avutil avformat)
 
+message(STATUS ${FFMPEG_LIBRARIES})
+
 find_package(PkgConfig)
