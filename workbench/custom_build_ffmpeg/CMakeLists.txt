@@ -30,7 +30,6 @@ find_library(AVUTIL_LIBRARY
     NAMES avutil
     PATHS "${CMAKE_BINARY_DIR}/lib"
 )
-message(STATUS ${AVUTIL_LIBRARY})
 add_library(avutil SHARED IMPORTED)
 set_target_properties(avutil PROPERTIES
   IMPORTED_LOCATION ${AVUTIL_LIBRARY}
