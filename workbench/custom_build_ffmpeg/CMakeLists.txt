@@ -28,8 +28,9 @@ EXTERNALPROJECT_ADD(
 # PATH 01
 find_library(AVUTIL_LIBRARY
     NAMES avutil
-    HINTS "${CMAKE_BINARY_DIR}/lib"
+    PATHS "${CMAKE_BINARY_DIR}/lib"
 )
+message(STATUS ${AVUTIL_LIBRARY})
 add_library(avutil SHARED IMPORTED)
 set_target_properties(avutil PROPERTIES
   IMPORTED_LOCATION ${AVUTIL_LIBRARY}
@@ -42,7 +43,7 @@ target_link_libraries(ffmpeg_hello avutil)
 # include_directories(${CMAKE_BINARY_DIR}/include)
 # find_library(avutil
 #     NAMES avutil
-#     HINTS "${CMAKE_BINARY_DIR}/lib"
+#     PATHS "${CMAKE_BINARY_DIR}/lib"
 # )
 # add_executable(ffmpeg_hello src/ffmpeg_hello.c)
 # target_link_libraries(ffmpeg_hello ${avutil})
