@@ -9,12 +9,13 @@ Playground for CMake
 ## MRU
 
 ```
-cmake -Bbuild
+cmake -S . -B build -Wno-dev
+cmake -S . -B build -LH
 cmake --open ./build
 cmake --build ./build
 cmake --install ./build --prefix /my/install/prefix
-cmake . -LH
-ccmake .
+ccmake
+ctest
 ```
 
 ## Command
